@@ -34,47 +34,93 @@ TensorFlow-Lottery-Prediction/
 
 ### 1. `createModel.py` - Training the Prediction Model
 
-This script trains an LSTM model to predict statistical patterns in lottery numbers. Currently, it's configured to predict the counts of even, odd, low, and high numbers in the next lottery draw.
+This script trains an LSTM model to predict various statistical patterns in lottery numbers. It supports different prediction types:
+
+*   `raw_numbers`: Predicts the raw scaled lottery numbers.
+*   `sum`: Predicts the sum of the lottery numbers.
+*   `counts`: Predicts the counts of even, odd, low, and high numbers.
 
 **Input:** A CSV file containing historical lottery draw data.
-**Output:** A trained Keras model (`.h5` file), an input data scaler (`.joblib` file), and a counts scaler (`.joblib` file).
+**Output:** A trained Keras model (`.h5` file), an input data scaler (`.joblib` file), and a target-specific scaler (`.joblib` file).
 
-**Example Command:**
+**Example Commands:**
 
+**Train for `counts` prediction:**
 ```bash
 python createModel.py --csv_file ArchivioSuperAl1801_con7.csv \
+                      --prediction_type counts \
                       --model_output lottery_model_counts.h5 \
-                      --scaler_output scaler_input.joblib \
-                      --counts_scaler_output scaler_counts.joblib
+                      --input_scaler_output scaler_input.joblib \
+                      --target_scaler_output scaler_counts.joblib
+```
+
+**Train for `sum` prediction:**
+```bash
+python createModel.py --csv_file ArchivioSuperAl1801_con7.csv \
+                      --prediction_type sum \
+                      --model_output lottery_model_sum.h5 \
+                      --input_scaler_output scaler_input.joblib \
+                      --target_scaler_output scaler_sum.joblib
+```
+
+**Train for `raw_numbers` prediction:**
+```bash
+python createModel.py --csv_file ArchivioSuperAl1801_con7.csv \
+                      --prediction_type raw_numbers \
+                      --model_output lottery_model_raw.h5 \
+                      --input_scaler_output scaler_input.joblib \
+                      --target_scaler_output scaler_raw.joblib
 ```
 
 **Arguments:**
-*   `--csv_file`: Path to the input CSV file containing lottery data. (Default: `ArchivioSuperAl1801_con7.csv`)
-*   `--model_output`: Path to save the trained Keras model. (Default: `lottery_model_counts.h5`)
-*   `--scaler_output`: Path to save the fitted `StandardScaler` object for input data. (Default: `scaler_input.joblib`)
-*   `--counts_scaler_output`: Path to save the fitted `StandardScaler` object for the predicted counts (even, odd, low, high). (Default: `scaler_counts.joblib`)
+*   `--csv_file` (required): Path to the input CSV file containing lottery data. (Default: `ArchivioSuperAl1801_con7.csv`)
+*   `--prediction_type` (required): Type of prediction to train for: `raw_numbers`, `sum`, or `counts`.
+*   `--model_output`: Path to save the trained Keras model. (Default: `lottery_model_<prediction_type>.h5`)
+*   `--input_scaler_output`: Path to save the fitted `StandardScaler` object for input data. (Default: `scaler_input.joblib`)
+*   `--target_scaler_output`: Path to save the fitted `StandardScaler` object for the target data. (Default: `scaler_<prediction_type>.joblib`)
 
 ### 2. `predict.py` - Making Predictions
 
-This script uses a pre-trained model and scalers to make predictions based on the latest historical data.
+This script uses a pre-trained model and scalers to make predictions based on the latest historical data. It also supports different prediction types, which must match the type the model was trained on.
 
-**Input:** A trained Keras model (`.h5` file), an input data scaler (`.joblib` file), a counts scaler (`.joblib` file), and the latest historical lottery data CSV.
-**Output:** Predicted counts of even, odd, low, and high numbers for the next draw.
+**Input:** A trained Keras model (`.h5` file), an input data scaler (`.joblib` file), a target-specific scaler (`.joblib` file), and the latest historical lottery data CSV.
+**Output:** Predicted values based on the chosen prediction type.
 
-**Example Command:**
+**Example Commands:**
 
+**Predict `counts`:**
 ```bash
-python predict.py --model_path lottery_model_counts.h5 \
+python predict.py --csv_file ArchivioSuperAl1801_con7.csv \
+                  --prediction_type counts \
+                  --model_path lottery_model_counts.h5 \
                   --input_scaler_path scaler_input.joblib \
-                  --counts_scaler_path scaler_counts.joblib \
-                  --csv_file ArchivioSuperAl1801_con7.csv
+                  --target_scaler_path scaler_counts.joblib
+```
+
+**Predict `sum`:**
+```bash
+python predict.py --csv_file ArchivioSuperAl1801_con7.csv \
+                  --prediction_type sum \
+                  --model_path lottery_model_sum.h5 \
+                  --input_scaler_path scaler_input.joblib \
+                  --target_scaler_path scaler_sum.joblib
+```
+
+**Predict `raw_numbers`:**
+```bash
+python predict.py --csv_file ArchivioSuperAl1801_con7.csv \
+                  --prediction_type raw_numbers \
+                  --model_path lottery_model_raw.h5 \
+                  --input_scaler_path scaler_input.joblib \
+                  --target_scaler_path scaler_raw.joblib
 ```
 
 **Arguments:**
-*   `--model_path`: Path to the trained Keras model file. (Default: `lottery_model_counts.h5`)
+*   `--csv_file` (required): Path to the input CSV file containing lottery data. (Default: `ArchivioSuperAl1801_con7.csv`)
+*   `--prediction_type` (required): Type of prediction to perform: `raw_numbers`, `sum`, or `counts`.
+*   `--model_path`: Path to the trained Keras model file. (Default: `lottery_model_<prediction_type>.h5`)
 *   `--input_scaler_path`: Path to the fitted `StandardScaler` object for input data. (Default: `scaler_input.joblib`)
-*   `--counts_scaler_path`: Path to the fitted `StandardScaler` object for the counts. (Default: `scaler_counts.joblib`)
-*   `--csv_file`: Path to the input CSV file containing lottery data. (Default: `ArchivioSuperAl1801_con7.csv`)
+*   `--target_scaler_path`: Path to the fitted `StandardScaler` object for the target data. (Default: `scaler_<prediction_type>.joblib`)
 
 ## Code Practices
 
@@ -91,5 +137,3 @@ python predict.py --model_path lottery_model_counts.h5 \
 *   **Different Prediction Targets:** Predict other statistical properties (e.g., sum of first three numbers, range of numbers).
 *   **Visualization:** Add scripts to visualize training progress and prediction results.
 *   **Unit Testing:** Implement unit tests for data preparation and model components.
-
-
