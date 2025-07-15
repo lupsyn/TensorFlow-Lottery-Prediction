@@ -1,4 +1,6 @@
-
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 predict.py
 
 This script uses a pre-trained TensorFlow/Keras LSTM model to make predictions based on
@@ -163,5 +165,3 @@ if __name__ == "__main__":
 
     # Call the main prediction function
     predict_lottery(args.prediction_type, args.model_path, args.input_scaler_path, args.target_scaler_path, args.csv_file)
-
-
