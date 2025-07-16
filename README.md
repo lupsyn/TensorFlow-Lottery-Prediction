@@ -115,6 +115,28 @@ python predict.py --csv_file ArchivioSuperAl1801_con7.csv \
                   --target_scaler_path scaler_raw.joblib
 ```
 
+Example of output : 
+```
+Input for prediction (last 7 draws):
+        A   B   C   D   E   F   G
+7089  37  42  49  53  57  65  62
+7090  26  45  58  65  70  82  27
+7091  16  46  61  71  75  85  64
+7092   1  33  40  61  64  73  15
+7093   5  15  20  32  65  75  12
+7094   1  31  40  62  64  74  81
+7095  16  24  25  43  64  78  54
+1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 302ms/step
+
+--- Predicted Sum ---
+Raw predicted sum (float): 324.01
+Rounded to nearest integer: 324
+Rounded up (ceil): 325
+Rounded down (floor): 324
+zsh: command not found: --model_path
+zsh: command not found: --target_scaler_path
+```
+
 **Arguments:**
 *   `--csv_file` (required): Path to the input CSV file containing lottery data. (Default: `ArchivioSuperAl1801_con7.csv`)
 *   `--prediction_type` (required): Type of prediction to perform: `raw_numbers`, `sum`, or `counts`.
