@@ -4,6 +4,8 @@ This repository contains Python scripts for exploring lottery number prediction 
 
 **Disclaimer:** Lottery outcomes are inherently random and statistically independent events. While these scripts demonstrate machine learning techniques for pattern recognition, they do not guarantee accurate predictions or winning lottery numbers. The purpose is educational and for exploring statistical properties of lottery data.
 
+To make it simple, it's like flipping the coin, knowing the previous one will not help in the new one.
+
 ## Project Structure
 
 ```
